@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Location Sharing</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 30px 15px;
+  background: #f1f5f9;
+}
+.box {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  max-width: 400px;
+  margin: auto;
+}
+button {
+  background: #16a34a;
+  color: white;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-size: 17px;
+  margin-top: 15px;
+}
+a {
+  display: block;
+  margin-top: 20px;
+}
+</style>
+</head>
+<body>
+<div class="box">
+  <h2>📍 Location Sharing</h2>
+  <p>Tap the button below to share your current location.</p>
+  <button onclick="getLocation()">Share My Location</button>
+  <p id="status"></p>
+  <div id="result"></div>
+</div>
+
+<script>
+function getLocation() {
+  const status = document.getElementById("status");
+  const result = document.getElementById("result");
+
+  if (!navigator.geolocation) {
+    status.textContent = "Location is not supported.";
+    return;
+  }
+
+  status.textContent = "Please allow location access.";
+
+  navigator.geolocation.getCurrentPosition(
+    function(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      const map = "https://www.google.com/maps?q=" + lat + "," + lon;
+
+      status.textContent = "Location found successfully!";
+      result.innerHTML =
+        '<a href="' + map + '" target="_blank">View My Location on Google Maps</a>' +
+        '<button onclick="shareLocation(\'' + map + '\')">Share via WhatsApp</button>';
+    },
+    function() {
+      status.textContent =
+        "Location unavailable. Please allow location access in your browser.";
+    },
+    {enableHighAccuracy: true, timeout: 15000}
+  );
+}
+
+function shareLocation(map) {
+  const message = "My current location: " + map;
+  window.open(
+    "https://wa.me/?text=" + encodeURIComponent(message),
+    "_blank"
+  );
+}
+</script>
+</body>
+</html>
